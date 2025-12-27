@@ -1,4 +1,3 @@
-
 ## Invert Binary Tree
 
 #### Statement
