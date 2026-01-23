@@ -61,51 +61,59 @@ Key observations:
 ```java
 import java.util.*;
 
-class Solution {
+public class Solution {
     public List<String> fullJustify(String[] words, int maxWidth) {
-        List<String> result = new ArrayList<>();
-        int index = 0;
-
-        while (index < words.length) {
-            int totalChars = words[index].length();
-            int last = index + 1;
-
-            // Fit as many words as possible into the current line
-            while (last < words.length) {
-                if (totalChars + 1 + words[last].length() > maxWidth) break;
-                totalChars += 1 + words[last].length();
-                last++;
+        int i = 0;
+        List<String> lines = new ArrayList<String>();
+        
+        while(i < words.length) {
+            int lineStart = i;
+            int lineLen = words[i].length();
+            i++;
+            
+            while(i < words.length && lineLen + 1 + words[i].length() <= maxWidth) {
+                lineLen += 1 + words[i].length();
+                i++;
             }
+            
+            int lineEnd = i;
+            int wordCount = lineEnd - lineStart;
+            
+            StringBuilder currLine = new StringBuilder();
 
-            StringBuilder sb = new StringBuilder();
-            int gaps = last - index - 1;
-
-            // If last line or line with one word: left-justified
-            if (last == words.length || gaps == 0) {
-                for (int i = index; i < last; i++) {
-                    sb.append(words[i]);
-                    if (i < last - 1) sb.append(" ");
+            // left justified case
+            if(lineEnd == words.length || wordCount == 1) {
+                for(int k = lineStart; k < lineEnd; k++) {
+                    currLine.append(words[k]);
+                    if(k < lineEnd - 1) currLine.append(" ");
                 }
-                while (sb.length() < maxWidth) sb.append(" ");
-            } else {
-                // Middle justification
-                int spaces = (maxWidth - totalChars) / gaps;
-                int extra = (maxWidth - totalChars) % gaps;
-
-                for (int i = index; i < last; i++) {
-                    sb.append(words[i]);
-                    if (i < last - 1) {
-                        for (int s = 0; s < spaces + 1; s++) sb.append(" ");
-                        if (extra-- > 0) sb.append(" ");
+                if(maxWidth - lineLen > 0) {
+                    currLine.append(" ".repeat(maxWidth - lineLen));
+                }
+            }
+            // equally justified case
+            else {
+                int remSpaces = maxWidth - lineLen;
+                int gaps = wordCount - 1;
+                int spaceSplit = remSpaces / gaps;
+                int extraSpaces = remSpaces % gaps;
+                
+                for(int k = lineStart; k < lineEnd; k++) {
+                    currLine.append(words[k]);
+                    if(k < lineEnd - 1) {
+                        int gapSpaces = spaceSplit + 1 + (extraSpaces > 0 ? 1 : 0);
+                        System.out.println(gapSpaces);
+                        currLine.append(" ".repeat(gapSpaces));
+                        extraSpaces--;
                     }
                 }
             }
-
-            result.add(sb.toString());
-            index = last;
+            
+            // add line to result set
+            lines.add(currLine.toString());
         }
-
-        return result;
+        
+        return lines;
     }
 }
 ```
