@@ -104,7 +104,7 @@ class FindMaxKnapsackProfit {
         
         int inc = 0, exc = 0;
         if(C - weights[N - 1] >= 0) {
-        inc = values[N - 1] + knapsack(C - weights[N - 1], N - 1, weights, values, dp);
+            inc = values[N - 1] + knapsack(C - weights[N - 1], N - 1, weights, values, dp);
         }
         exc = knapsack(C, N - 1, weights, values, dp);
         
